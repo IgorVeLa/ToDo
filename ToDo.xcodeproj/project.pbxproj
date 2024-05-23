@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7800CC032BED5DCC00C80ED9 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7800CC022BED5DCC00C80ED9 /* LocalNotification.swift */; };
+		7800CC0A2BF4069D00C80ED9 /* ContentView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7800CC092BF4069D00C80ED9 /* ContentView-ViewModel.swift */; };
 		7856ED5F2BE5730A00F63C49 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7856ED5E2BE5730A00F63C49 /* AddTaskView.swift */; };
 		786A48772BE7D8070077E349 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 786A48762BE7D8070077E349 /* TaskDetailView.swift */; };
 		78868FC82BE43FDE0054D378 /* ToDoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78868FC72BE43FDE0054D378 /* ToDoApp.swift */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		7800CC022BED5DCC00C80ED9 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
+		7800CC092BF4069D00C80ED9 /* ContentView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView-ViewModel.swift"; sourceTree = "<group>"; };
 		7856ED5E2BE5730A00F63C49 /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		786A48752BE7D1FC0077E349 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		786A48762BE7D8070077E349 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
@@ -43,6 +45,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7800CC062BF4030C00C80ED9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7800CC072BF4032C00C80ED9 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				7800CC092BF4069D00C80ED9 /* ContentView-ViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		7800CC082BF4033800C80ED9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				78C361992BEA8F0A00DE087C /* LocalNotifManager.swift */,
+				7800CC022BED5DCC00C80ED9 /* LocalNotification.swift */,
+				78868FD72BE449050054D378 /* Task.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		78868FBB2BE43FDE0054D378 = {
 			isa = PBXGroup;
 			children = (
@@ -62,9 +89,9 @@
 		78868FC62BE43FDE0054D378 /* ToDo */ = {
 			isa = PBXGroup;
 			children = (
-				78868FD72BE449050054D378 /* Task.swift */,
-				78C361992BEA8F0A00DE087C /* LocalNotifManager.swift */,
-				7800CC022BED5DCC00C80ED9 /* LocalNotification.swift */,
+				7800CC082BF4033800C80ED9 /* Models */,
+				7800CC072BF4032C00C80ED9 /* ViewModels */,
+				7800CC062BF4030C00C80ED9 /* Views */,
 				78868FC72BE43FDE0054D378 /* ToDoApp.swift */,
 				78868FC92BE43FDE0054D378 /* ContentView.swift */,
 				786A48762BE7D8070077E349 /* TaskDetailView.swift */,
@@ -159,6 +186,7 @@
 				78868FC82BE43FDE0054D378 /* ToDoApp.swift in Sources */,
 				7856ED5F2BE5730A00F63C49 /* AddTaskView.swift in Sources */,
 				7800CC032BED5DCC00C80ED9 /* LocalNotification.swift in Sources */,
+				7800CC0A2BF4069D00C80ED9 /* ContentView-ViewModel.swift in Sources */,
 				78C3619A2BEA8F0A00DE087C /* LocalNotifManager.swift in Sources */,
 				786A48772BE7D8070077E349 /* TaskDetailView.swift in Sources */,
 			);

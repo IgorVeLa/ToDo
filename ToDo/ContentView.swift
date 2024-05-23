@@ -9,24 +9,19 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
     @Environment(LocalNotifManager.self) var lnManager
     
-    @Query private var tasks: [ToDoTask]
+    @State private var viewModel: ViewModel
     
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter
-    }()
-    
-    @State private var showingAddTaskView = false
-    @State private var showingDetailTaskView = false
+    init(modelContext: ModelContext) {
+        let viewModel = ViewModel(modelContext: modelContext)
+        _viewModel = State(initialValue: viewModel)
+    }
     
     var body: some View {
         NavigationStack {
             List {
-                ForEach(tasks) { task in
+                ForEach(viewModel.tasks) { task in
                         HStack {
                             Button(task.completed ? "\(Image(systemName: "checkmark.circle.fill"))" : "\(Image(systemName: "circle"))") {
                                 task.completed.toggle()
@@ -42,24 +37,24 @@ struct ContentView: View {
                         .opacity(task.completed ? 0.3 : 1)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            showingDetailTaskView = true
+                            viewModel.showingDetailTaskView = true
                         }
-                        .sheet(isPresented: $showingDetailTaskView) {
+                        .sheet(isPresented: $viewModel.showingDetailTaskView) {
                             TaskDetailView(task: task)
                                 .presentationDetents([.medium])
                         }
                 }
-                .onDelete(perform: delete)
+                .onDelete(perform: viewModel.delete)
             }
             .navigationTitle("TODO")
             .overlay {
-                if tasks.isEmpty {
+                if viewModel.tasks.isEmpty {
                     Button {
-                        showingAddTaskView.toggle()
+                        viewModel.showingAddTaskView.toggle()
                     } label: {
                         ContentUnavailableView("No tasks", systemImage: "square.and.pencil", description: Text("Tap to add"))
                     }
-                    .sheet(isPresented: $showingAddTaskView) {
+                    .sheet(isPresented: $viewModel.showingAddTaskView, onDismiss: viewModel.fetchData) {
                         AddTaskView()
                             .presentationDetents([.medium])
                     }
@@ -69,16 +64,16 @@ struct ContentView: View {
                 try? await lnManager.requestAuthorisation()
             }
             .toolbar {
-                if !tasks.isEmpty {
+                if !viewModel.tasks.isEmpty {
                     ToolbarItem {
                         EditButton()
                     }
                     
                     ToolbarItem {
                         Button("\(Image(systemName: "plus"))") {
-                            showingAddTaskView.toggle()
+                            viewModel.showingAddTaskView.toggle()
                         }
-                        .sheet(isPresented: $showingAddTaskView) {
+                        .sheet(isPresented: $viewModel.showingAddTaskView, onDismiss: viewModel.fetchData) {
                             AddTaskView()
                                 .presentationDetents([.medium])
                         }
@@ -87,22 +82,13 @@ struct ContentView: View {
             }
         }
     }
-    
-    func delete(at offsets: IndexSet) {
-        for offset in offsets {
-            // find task in our query
-            let task = tasks[offset]
-
-            modelContext.delete(task)
-        }
-    }
 }
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: ToDoTask.self, configurations: config)
     
-    return ContentView()
+    return ContentView(modelContext: container.mainContext)
         .environment(LocalNotifManager())
         .modelContainer(container)
 }
