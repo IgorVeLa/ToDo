@@ -12,115 +12,80 @@ import UserNotifications
 
 struct AddTaskView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Environment(LocalNotifManager.self) var lnManager
+//    @Environment(\.modelContext) private var modelContext
+    //@Environment(LocalNotifManager.self) var lnManager
     
-    @State private var name = ""
-    @State private var desc = ""
+    @State private var viewModel: ViewModel
     
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter
-    }()
-    @State private var showDueDate = false
-    @State private var dueDate: Date?
-    @State private var dueDateDisplay = Date()
+    init(modelContext: ModelContext, lnManager: LocalNotifManager) {
+        let viewModel = ViewModel(modelContext: modelContext, lnManager: lnManager)
+        _viewModel = State(initialValue: viewModel)
+    }
     
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Enter task name", text: $name)
+                TextField("Enter task name", text: $viewModel.name)
                 
-                TextField("Description", text: $desc)
+                TextField("Description", text: $viewModel.desc)
                 
-                // TODO: add enable notif button when not granted
                 VStack(alignment: .leading) {
                     HStack {
                         Text("Due Date")
                         
                         Spacer()
                         
-                        if showDueDate {
+                        if viewModel.showDueDate {
                             Button("\(Image(systemName: "xmark.circle"))") {
-                                dueDate = nil
-                                showDueDate = false
-                                print("NO SHOW")
+                                viewModel.resetShowDueDate()
                             }
                             .buttonStyle(BorderlessButtonStyle())
                         }
                         
                         
-                        Text((showDueDate ? dueDate?.formatted(.dateTime.day().month().year()) : "")!)
+                        Text((viewModel.showDueDate ? viewModel.dueDate?.formatted(.dateTime.day().month().year()) : "")!)
                         Image(systemName: "calendar")
                             .overlay {
                                 DatePicker(
                                     "",
-                                    selection: $dueDateDisplay,
+                                    selection: $viewModel.dueDateDisplay,
                                     in: Date.now...,
                                     displayedComponents: [.date]
                                 )
                                 .blendMode(.destinationOver)
                             }
-                            .onChange(of: dueDateDisplay) {
-                                if (dueDate != nil) {
-                                    dueDate = dueDateDisplay
-                                } else {
-                                    dueDate = dueDateDisplay
-                                    showDueDate = true
-                                    print("SHOW")
-                                }
+                            .onChange(of: viewModel.dueDateDisplay) {
+                                viewModel.updateDueDate()
                             }
                         
-                        Text((showDueDate ? dueDate?.formatted(.dateTime.hour().minute()) : "")!)
+                        Text((viewModel.showDueDate ? viewModel.dueDate?.formatted(.dateTime.hour().minute()) : "")!)
                         Image(systemName: "clock")
                             .overlay {
                                 DatePicker(
                                     "",
-                                    selection: $dueDateDisplay,
+                                    selection: $viewModel.dueDateDisplay,
                                     in: Date.now...,
                                     displayedComponents: [.hourAndMinute]
                                 )
                                 .blendMode(.destinationOver)
                             }
-                            .onChange(of: dueDateDisplay) {
-                                if (dueDate != nil) {
-                                    dueDate = dueDateDisplay
-                                } else {
-                                    dueDate = dueDateDisplay
-                                    showDueDate = true
-                                    print("SHOW")
-                                }
+                            .onChange(of: viewModel.dueDateDisplay) {
+                                viewModel.updateDueDate()
                             }
                         }
                     }
             }
+            .task {
+                try? await viewModel.lnManager.requestAuthorisation()
+            }
             .navigationTitle("New Task")
             .toolbar {
-                Button("Save", action: save)
+                Button("Save") {
+                    viewModel.save()
+                    dismiss()
+                }
             }
         }
-    }
-    
-    func save() {
-        // add Task object to modelContainer
-        let newTask = ToDoTask(name: name, desc: desc, dueDate: dueDate)
-        // add optional dates
-        if let dueDate {
-            Task {
-                let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: dueDate)
-                let localNotification = LocalNotification(identifier: UUID().uuidString,
-                                                          title: name,
-                                                          body: desc,
-                                                          dateComponents: dateComponents,
-                                                          repeats: false)
-                await lnManager.schedule(localNotif: localNotification)
-            }
-        }
-        
-        modelContext.insert(newTask)
-        
-        dismiss()
     }
 }
 
@@ -128,7 +93,7 @@ struct AddTaskView: View {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: ToDoTask.self, configurations: config)
     
-    return AddTaskView()
+    return AddTaskView(modelContext: container.mainContext, lnManager: LocalNotifManager())
         .environment(LocalNotifManager())
         .modelContainer(container)
 }

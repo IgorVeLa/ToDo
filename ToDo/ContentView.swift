@@ -55,13 +55,10 @@ struct ContentView: View {
                         ContentUnavailableView("No tasks", systemImage: "square.and.pencil", description: Text("Tap to add"))
                     }
                     .sheet(isPresented: $viewModel.showingAddTaskView, onDismiss: viewModel.fetchData) {
-                        AddTaskView()
+                        AddTaskView(modelContext: viewModel.modelContext, lnManager: lnManager)
                             .presentationDetents([.medium])
                     }
                 }
-            }
-            .task {
-                try? await lnManager.requestAuthorisation()
             }
             .toolbar {
                 if !viewModel.tasks.isEmpty {
@@ -74,7 +71,7 @@ struct ContentView: View {
                             viewModel.showingAddTaskView.toggle()
                         }
                         .sheet(isPresented: $viewModel.showingAddTaskView, onDismiss: viewModel.fetchData) {
-                            AddTaskView()
+                            AddTaskView(modelContext: viewModel.modelContext, lnManager: lnManager)
                                 .presentationDetents([.medium])
                         }
                     }
