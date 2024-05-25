@@ -26,7 +26,6 @@ struct ToDoApp: App {
             ContentView(modelContext: container.mainContext)
                 .environment(lnManager)
         }
-        //.modelContainer(for: ToDoTask.self)
         .modelContainer(container)
     }
 }

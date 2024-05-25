@@ -41,9 +41,11 @@ extension ContentView {
             for offset in offsets {
                 // find task in our query
                 let task = tasks[offset]
-
+                // remove from db
                 modelContext.delete(task)
             }
+            // remove from model array
+            tasks.remove(atOffsets: offsets)
         }
     }
 }

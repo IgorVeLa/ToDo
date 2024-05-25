@@ -12,8 +12,6 @@ import UserNotifications
 
 struct AddTaskView: View {
     @Environment(\.dismiss) private var dismiss
-//    @Environment(\.modelContext) private var modelContext
-    //@Environment(LocalNotifManager.self) var lnManager
     
     @State private var viewModel: ViewModel
     
@@ -29,6 +27,8 @@ struct AddTaskView: View {
                 
                 TextField("Description", text: $viewModel.desc)
                 
+                // reask for authorisation if declined previously
+                
                 VStack(alignment: .leading) {
                     HStack {
                         Text("Due Date")
@@ -41,7 +41,6 @@ struct AddTaskView: View {
                             }
                             .buttonStyle(BorderlessButtonStyle())
                         }
-                        
                         
                         Text((viewModel.showDueDate ? viewModel.dueDate?.formatted(.dateTime.day().month().year()) : "")!)
                         Image(systemName: "calendar")
