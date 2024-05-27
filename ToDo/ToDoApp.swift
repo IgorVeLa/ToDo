@@ -9,13 +9,16 @@ import SwiftUI
 import SwiftData
 
 @main
-struct ToDoApp: App {
+    struct ToDoApp: App {
     let container: ModelContainer
+    let context: ModelContext
     @State var lnManager = LocalNotifManager()
     
     init() {
         do {
             container = try ModelContainer(for: ToDoTask.self)
+            context = ModelContext(container)
+            context.autosaveEnabled = false
         } catch {
             fatalError("Failed to create ModelContainer for tasks.")
         }
@@ -23,7 +26,7 @@ struct ToDoApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(modelContext: container.mainContext)
+            ContentView(modelContext: context)
                 .environment(lnManager)
         }
         .modelContainer(container)

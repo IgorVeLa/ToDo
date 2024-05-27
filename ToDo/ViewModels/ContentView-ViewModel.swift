@@ -21,7 +21,7 @@ extension ContentView {
         }()
         
         var showingAddTaskView = false
-        var showingDetailTaskView = false
+        var showingDetailTask: ToDoTask? = nil
         
         init(modelContext: ModelContext) {
             self.modelContext = modelContext
@@ -46,6 +46,7 @@ extension ContentView {
             }
             // remove from model array
             tasks.remove(atOffsets: offsets)
+            try? modelContext.save()
         }
     }
 }

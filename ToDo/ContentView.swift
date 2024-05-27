@@ -21,7 +21,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(viewModel.tasks) { task in
+                ForEach(viewModel.tasks, id: \.self) { task in
                         HStack {
                             Button(task.completed ? "\(Image(systemName: "checkmark.circle.fill"))" : "\(Image(systemName: "circle"))") {
                                 task.completed.toggle()
@@ -37,12 +37,13 @@ struct ContentView: View {
                         .opacity(task.completed ? 0.3 : 1)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            viewModel.showingDetailTaskView = true
+                            viewModel.showingDetailTask = task
                         }
-                        .sheet(isPresented: $viewModel.showingDetailTaskView) {
-                            TaskDetailView(task: task)
+                        .sheet(item: $viewModel.showingDetailTask, onDismiss: viewModel.fetchData) { task in
+                            TaskDetailView(modelContext: viewModel.modelContext, task: task)
                                 .presentationDetents([.medium])
                         }
+
                 }
                 .onDelete(perform: viewModel.delete)
             }

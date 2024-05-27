@@ -66,6 +66,7 @@ extension AddTaskView {
             }
             
             modelContext.insert(newTask)
+            try? modelContext.save()
         }
     }
 }
