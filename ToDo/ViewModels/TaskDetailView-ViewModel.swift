@@ -17,6 +17,10 @@ extension TaskDetailView {
         // to keep track for any changes
         var modifiedTaskName: String
         var modifiedTaskDesc: String
+        // for DatePickerView
+        var showDueDate = false
+        var dueDate: Date?
+        var dueDateDisplay = Date()
         
         init(modelContext: ModelContext, task: ToDoTask) {
             self.modelContext = modelContext
@@ -25,23 +29,36 @@ extension TaskDetailView {
             self.modifiedTaskDesc = task.desc
         }
         
-        func save() {
-            if modifiedTaskName != task.name ||
-                modifiedTaskDesc != task.desc {
-                task.name = modifiedTaskName
-                task.desc = modifiedTaskDesc
-                try? modelContext.save()
-            } else {
-                task.name = modifiedTaskName
-            }
+        func resetShowDueDate() {
+            dueDate = nil
+            showDueDate = false
+            task.dueDate = nil
         }
         
-        func toggleToolBar(newValue: String) {
-            if task.name == newValue ||
-                task.desc == newValue {
-                showingToolBar = false
+        func updateDueDate() {
+            if (dueDate != nil) {
+                dueDate = dueDateDisplay
             } else {
+                dueDate = dueDateDisplay
+                showDueDate = true
+            }
+            
+            toggleToolBar(newValue: task.name, newDate: dueDate!)
+        }
+        
+        func save() {
+            task.name = modifiedTaskName
+            task.desc = modifiedTaskDesc
+            task.dueDate = dueDate
+            try? modelContext.save()
+        }
+        
+        func toggleToolBar(newValue: String, newDate: Date) {
+            if task.name != newValue ||
+                task.desc != newValue || task.dueDate != newDate {
                 showingToolBar = true
+            } else {
+                showingToolBar = false
             }
         }
     }

@@ -39,8 +39,6 @@ extension AddTaskView {
         }
         
         func updateDueDate() {
-            print("UPDATING")
-            print("due date: \(String(describing: dueDate))")
             if (dueDate != nil) {
                 dueDate = dueDateDisplay
             } else {

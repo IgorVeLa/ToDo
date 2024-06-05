@@ -25,20 +25,95 @@ struct TaskDetailView: View {
                 Section("Name") {
                     TextField("", text: $viewModel.modifiedTaskName)
                         .onChange(of: viewModel.modifiedTaskName) { (oldValue, newValue) in
-                            viewModel.toggleToolBar(newValue: newValue)
+                            viewModel.toggleToolBar(newValue: newValue, newDate: viewModel.task.dueDate!)
                         }
                 }
                 
                 Section("Description") {
                     TextField("", text: $viewModel.modifiedTaskDesc)
                         .onChange(of: viewModel.modifiedTaskDesc) { (oldValue, newValue) in
-                            viewModel.toggleToolBar(newValue: newValue)
+                            viewModel.toggleToolBar(newValue: newValue, newDate: viewModel.task.dueDate!)
                         }
                 }
                 
                 // turn due date display into view to be reusable
                 Section("Due Date") {
-                    Text(viewModel.task.dueDate?.formatted() ?? "N/A")
+                    if (viewModel.task.dueDate != nil) {
+                        HStack {
+                            Button("\(Image(systemName: "xmark.circle"))") {
+                                viewModel.resetShowDueDate()
+                            }
+                            .buttonStyle(BorderlessButtonStyle())
+                            
+                            Text(((viewModel.dueDate != nil) ?
+                                  viewModel.dueDate?.formatted(.dateTime.day().month().year()) :
+                                    viewModel.task.dueDate?.formatted(.dateTime.day().month().year())) ?? "N/A"
+                            )
+                                .overlay {
+                                    DatePicker(
+                                        "",
+                                        selection: $viewModel.dueDateDisplay,
+                                        displayedComponents: [.date]
+                                    )
+                                    .blendMode(.destinationOver)
+                                }
+                                .onChange(of: viewModel.dueDateDisplay) {
+                                    viewModel.updateDueDate()
+                                }
+                            Text(((viewModel.dueDate != nil) ?
+                                  viewModel.dueDate?.formatted(.dateTime.hour().minute()) :
+                                    viewModel.task.dueDate?.formatted(.dateTime.hour().minute())) ?? ""
+                            )
+                                .overlay {
+                                    DatePicker(
+                                        "",
+                                        selection: $viewModel.dueDateDisplay,
+                                        displayedComponents: [.hourAndMinute]
+                                    )
+                                    .blendMode(.destinationOver)
+                                }
+                                .onChange(of: viewModel.dueDateDisplay) {
+                                    viewModel.updateDueDate()
+                                }
+                        }
+                    } else {
+                        HStack {
+                            Text("No due date")
+                                .opacity(viewModel.showDueDate ? 0 : 0.7)
+                            
+                            Spacer()
+                        
+                            Text((viewModel.showDueDate ? viewModel.dueDate?.formatted(.dateTime.day().month().year()) : "")!)
+                            Image(systemName: "calendar")
+                                .overlay {
+                                    DatePicker(
+                                        "",
+                                        selection: $viewModel.dueDateDisplay,
+                                        in: Date.now...,
+                                        displayedComponents: [.date]
+                                    )
+                                    .blendMode(.destinationOver)
+                                }
+                                .onChange(of: viewModel.dueDateDisplay) {
+                                    viewModel.updateDueDate()
+                                }
+                            
+                            Text((viewModel.showDueDate ? viewModel.dueDate?.formatted(.dateTime.hour().minute()) : "")!)
+                            Image(systemName: "clock")
+                                .overlay {
+                                    DatePicker(
+                                        "",
+                                        selection: $viewModel.dueDateDisplay,
+                                        in: Date.now...,
+                                        displayedComponents: [.hourAndMinute]
+                                    )
+                                    .blendMode(.destinationOver)
+                                }
+                                .onChange(of: viewModel.dueDateDisplay) {
+                                    viewModel.updateDueDate()
+                                }
+                        }
+                    }
                 }
             }
             .toolbar {
