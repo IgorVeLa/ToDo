@@ -30,7 +30,7 @@ extension ContentView {
         
         func fetchData() {
             do {
-                let descriptor = FetchDescriptor<ToDoTask>(sortBy: [SortDescriptor(\.name)])
+                let descriptor = FetchDescriptor<ToDoTask>(sortBy: [SortDescriptor(\.created, order: .reverse)])
                 tasks = try modelContext.fetch(descriptor)
             } catch {
                 fatalError(error.localizedDescription)

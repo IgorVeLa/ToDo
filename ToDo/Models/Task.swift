@@ -13,8 +13,9 @@ class ToDoTask {
     var name = ""
     var desc = ""
     var completed = false
+    var created = Date.now // for sorting purposes
     var dueDate: Date?
-    var reminder: Date?
+    var reminder: Date? // not used yet
     
     init(name: String = "", desc: String = "", completed: Bool = false, dueDate: Date? = nil, reminder: Date? = nil) {
         self.name = name

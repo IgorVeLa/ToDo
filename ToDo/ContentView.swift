@@ -64,10 +64,6 @@ struct ContentView: View {
             .toolbar {
                 if !viewModel.tasks.isEmpty {
                     ToolbarItem {
-                        EditButton()
-                    }
-                    
-                    ToolbarItem {
                         Button("\(Image(systemName: "plus"))") {
                             viewModel.showingAddTaskView.toggle()
                         }
