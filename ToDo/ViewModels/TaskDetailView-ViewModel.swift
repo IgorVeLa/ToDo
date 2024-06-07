@@ -10,55 +10,72 @@ import SwiftData
 
 extension TaskDetailView {
     @Observable
-    class ViewModel {
+    class ViewModel: CalendarOverlay {
         var modelContext: ModelContext
         var task: ToDoTask
         var showingToolBar = false
         // to keep track for any changes
-        var modifiedTaskName: String
-        var modifiedTaskDesc: String
-        // for DatePickerView
-        var showDueDate = false
-        var dueDate: Date?
-        var dueDateDisplay = Date()
+        var tempTaskName: String
+        var tempTaskDesc: String
+        var tempDueTask: Date?
+        
+        var calendarOverlay = CalendarOverlay()
         
         init(modelContext: ModelContext, task: ToDoTask) {
             self.modelContext = modelContext
             self.task = task
-            self.modifiedTaskName = task.name
-            self.modifiedTaskDesc = task.desc
-        }
-        
-        func resetShowDueDate() {
-            dueDate = nil
-            showDueDate = false
-            task.dueDate = nil
-        }
-        
-        func updateDueDate() {
-            if (dueDate != nil) {
-                dueDate = dueDateDisplay
-            } else {
-                dueDate = dueDateDisplay
-                showDueDate = true
-            }
-            
-            toggleToolBar(newValue: task.name, newDate: dueDate!)
+            self.tempTaskName = task.name
+            self.tempTaskDesc = task.desc
+            self.tempDueTask = task.dueDate
         }
         
         func save() {
-            task.name = modifiedTaskName
-            task.desc = modifiedTaskDesc
-            task.dueDate = dueDate
-            try? modelContext.save()
+            if tempDueTask == nil {
+                // allows to save task if set to no date
+                try? modelContext.save()
+            } else {
+                // save task to new modified one
+                task.dueDate = tempDueTask
+                try? modelContext.save()
+            }
         }
         
-        func toggleToolBar(newValue: String, newDate: Date) {
+        func toggleToolBar(newValue: String, newDate: Date?) {
             if task.name != newValue ||
                 task.desc != newValue || task.dueDate != newDate {
                 showingToolBar = true
             } else {
                 showingToolBar = false
+            }
+        }
+        
+        func cancel() {
+            if task.dueDate == nil {
+                // if task due date has been set to no date then add date back
+                task.dueDate = tempDueTask
+            } else {
+                tempDueTask = task.dueDate
+            }
+        }
+        
+        override func resetShowDueDate() {
+            tempDueTask = nil
+            // stops showing task dueDate
+            task.dueDate = nil
+            // hides overlay
+            showDueDate = false
+            
+            showingToolBar = true
+        }
+        
+        override func updateDueDate() {
+            if (dueDate != nil) {
+                dueDate = dueDateDisplay
+                tempDueTask = dueDate
+            } else {
+                dueDate = dueDateDisplay
+                tempDueTask = dueDate
+                showDueDate = true
             }
         }
     }

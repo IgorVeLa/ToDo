@@ -7,9 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
-@main
-    struct ToDoApp: App {
+@main    struct ToDoApp: App {
     let container: ModelContainer
     let context: ModelContext
     @State var lnManager = LocalNotifManager()

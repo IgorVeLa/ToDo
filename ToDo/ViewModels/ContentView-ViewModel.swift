@@ -14,12 +14,6 @@ extension ContentView {
         var modelContext: ModelContext
         var tasks = [ToDoTask]()
         
-        private let dateFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .medium
-            return formatter
-        }()
-        
         var showingAddTaskView = false
         var showingDetailTask: ToDoTask? = nil
         
