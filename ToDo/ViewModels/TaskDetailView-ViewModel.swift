@@ -32,9 +32,13 @@ extension TaskDetailView {
         func save() {
             if tempDueTask == nil {
                 // allows to save task if set to no date
+                task.name = tempTaskName
+                task.desc = tempTaskDesc
                 try? modelContext.save()
             } else {
                 // save task to new modified one
+                task.name = tempTaskName
+                task.desc = tempTaskDesc
                 task.dueDate = tempDueTask
                 try? modelContext.save()
             }
