@@ -43,6 +43,7 @@ struct ContentView: View {
                             TaskDetailView(modelContext: viewModel.modelContext, task: task)
                                 .presentationDetents([.medium])
                         }
+                        .accessibilityIdentifier("ToDoTaskHStack")
 
                 }
                 .onDelete(perform: viewModel.delete)
@@ -59,6 +60,7 @@ struct ContentView: View {
                         AddTaskView(modelContext: viewModel.modelContext, lnManager: lnManager)
                             .presentationDetents([.medium])
                     }
+                    .accessibilityIdentifier("noTaskButton")
                 }
             }
             .toolbar {

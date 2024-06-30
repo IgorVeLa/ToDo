@@ -24,8 +24,10 @@ struct AddTaskView: View {
         NavigationStack {
             Form {
                 TextField("Enter task name", text: $viewModel.name)
+                    .accessibilityIdentifier("nameTaskField")
                 
                 TextField("Description", text: $viewModel.desc)
+                    .accessibilityIdentifier("descTaskField")
                 
                 // reask for authorisation if declined previously
                 
@@ -59,6 +61,7 @@ struct AddTaskView: View {
                 }
             }
         }
+        .accessibilityIdentifier("AddTaskView")
     }
 }
 

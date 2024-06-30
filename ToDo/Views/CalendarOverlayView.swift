@@ -28,6 +28,7 @@ struct CalendarOverlayView: View {
             .onChange(of: selectedDateDisplay) {
                 onDateChange()
             }
+            .accessibilityIdentifier("calendarDateImage")
         
         Text((showDueDate ? selectedDate?.formatted(.dateTime.hour().minute()) : "")!)
         Image(systemName: "clock")
@@ -37,6 +38,7 @@ struct CalendarOverlayView: View {
             .onChange(of: selectedDateDisplay) {
                 onDateChange()
             }
+            .accessibilityIdentifier("clockDateImage")
     }
 }
 
@@ -51,6 +53,7 @@ struct DateOverlay: View {
             displayedComponents: [.date]
         )
         .blendMode(.destinationOver)
+        .accessibilityIdentifier("calendarDatePicker")
     }
 }
 
@@ -65,6 +68,7 @@ struct TimeOverlay: View {
             displayedComponents: [.hourAndMinute]
         )
         .blendMode(.destinationOver)
+        .accessibilityIdentifier("timeDatePicker")
     }
 }
 
@@ -76,5 +80,6 @@ struct CancelButton: View {
             cancelMethod()
         }
         .buttonStyle(BorderlessButtonStyle())
+        .accessibilityIdentifier("cancelDateButton")
     }
 }
